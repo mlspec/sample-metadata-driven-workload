@@ -25,6 +25,20 @@ class Workflow:
         (self.rootLogger, self.buffer) = setupLogger()
 
     def main(self):
+
+"""
+- Dashboard for runs
+-- Size
+-- Likelihood of bias
+-- Time for run
+-- Accuracy
+- Filter by version
+- Look up at top version and show metadata going in and out
+
+- Show bad input (e.g. it's null) and what happens when you run it
+- Show when you add a new step - how you can compare those with other versions
+
+"""
         MLSchema.append_schema_to_registry(Path(".parameters") / "schemas")
 
         repo_name = "mlspec"
