@@ -25,8 +25,7 @@ class Workflow:
         (self.rootLogger, self.buffer) = setupLogger()
 
     def main(self):
-
-"""
+        c = """
 - Dashboard for runs
 -- Size
 -- Likelihood of bias
@@ -38,9 +37,9 @@ class Workflow:
 - Show bad input (e.g. it's null) and what happens when you run it
 - Show when you add a new step - how you can compare those with other versions
 
-"""
+""" # noqa
+        credentials = Credentials.metastore_credentials_prod
         MLSchema.append_schema_to_registry(Path(".parameters") / "schemas")
-
         repo_name = "mlspec"
         output_regex = "::set-output name=output_base64_encoded::(.*?)\\\\"
 
@@ -78,13 +77,12 @@ class Workflow:
         environment_dict = YAML.safe_load(
             f"""
 INPUT_schemas_directory: '.parameters/schemas'
-# INPUT_schemas_git_url: 'https://github.com:mlspec/mlspeclib-action-samples-schemas.git'
 INPUT_schemas_git_url: 'https://github.com/mlspec/mlspeclib-action-samples-schemas.git'
-INPUT_workflow_node_id: 'workflow|500.0.1|5d265f44-b919-4882-96c2-32799a7b7b76'
+INPUT_workflow_node_id: 'workflow|500.0.1|31ca83ed-8263-4c8c-8672-7a2163a34725'
 INPUT_step_name: {step_name}
 INPUT_input_parameters_raw: {data_source.dict_without_internal_variables()}
 INPUT_execution_parameters_raw: {data_process_run.dict_without_internal_variables()}
-INPUT_METASTORE_CREDENTIALS: {Credentials.metastore_credentials}
+INPUT_METASTORE_CREDENTIALS: {credentials}
 GITHUB_RUN_ID: {str(run_id)}
 GITHUB_WORKSPACE: '/src'
         """
@@ -99,22 +97,22 @@ GITHUB_WORKSPACE: '/src'
         process_data_encoded_val = m.group(1)
 
         # Below is for debugging, we're ok leaving it in base64 encoded
-        process_data_output_value = base64.urlsafe_b64decode(process_data_encoded_val)
+        # process_data_output_value = base64.urlsafe_b64decode(process_data_encoded_val)
         self.buffer.truncate(0)
         self.buffer.seek(0)
 
         step_name = "train"
         training_run = MLObject()
         training_run.set_type("500.0.1", "training_run")
-        training_run.nodes = 8
-        training_run.cpu_per_node = 8
-        training_run.ram_per_node = "64Gi"
-        training_run.gpu_required = True
+        training_run.nodes = random.randrange(1, 4) * 2
+        training_run.cpu_per_node = random.randrange(2, 8) * 2
+        training_run.ram_per_node = f"{random.randrange(1,16) * 8}Gi"
+        training_run.gpu_required = (random.randrange(1, 2) % 2) == 0
         training_run.output_path = "test/models/output"
-        training_run.training_params.learning_rate = 0.1
-        training_run.training_params.loss = 0.3
-        training_run.training_params.batch_size = 1000
-        training_run.training_params.epoch = 50
+        training_run.training_params.learning_rate = 1 / (pow(10, random.randint(0, 4)))
+        training_run.training_params.loss = random.random()
+        training_run.training_params.batch_size = random.randrange(1, 5) * 500
+        training_run.training_params.epoch = random.randrange(1, 8) * 25
         training_run.training_params.optimizer = ["SGD"]
         training_run.training_params.other_tags = {"pii": False, "data_sha": "8b03f70"}
         training_run.extended_properties = {}
@@ -123,11 +121,11 @@ GITHUB_WORKSPACE: '/src'
             f"""
 INPUT_schemas_directory: '.parameters/schemas'
 INPUT_schemas_git_url: 'https://github.com/mlspec/mlspeclib-action-samples-schemas.git'
-INPUT_workflow_node_id: 'workflow|500.0.1|5d265f44-b919-4882-96c2-32799a7b7b76'
+INPUT_workflow_node_id: 'workflow|500.0.1|31ca83ed-8263-4c8c-8672-7a2163a34725'
 INPUT_step_name: {step_name}
 INPUT_input_parameters_base64: {process_data_encoded_val}
 INPUT_execution_parameters_raw: {training_run.dict_without_internal_variables()}
-INPUT_METASTORE_CREDENTIALS: {Credentials.metastore_credentials}
+INPUT_METASTORE_CREDENTIALS: {credentials}
 GITHUB_RUN_ID: {str(run_id)}
 GITHUB_WORKSPACE: '/src'
         """
@@ -140,7 +138,7 @@ GITHUB_WORKSPACE: '/src'
         buff_val = self.buffer.getvalue()
         m = re.search(output_regex, buff_val)
         train_encoded_val = m.group(1)
-        train_output_value = base64.urlsafe_b64decode(train_encoded_val)
+        # train_output_value = base64.urlsafe_b64decode(train_encoded_val)
         self.buffer.truncate(0)
         self.buffer.seek(0)
 
@@ -150,22 +148,26 @@ GITHUB_WORKSPACE: '/src'
         package_run.run_id = run_id
         package_run.step_id = str(uuid.uuid4())
         package_run.run_date = run_date_start.isoformat()
-        package_run.model_source = '/nfs/trained_models/nlp'
+        package_run.model_source = "/nfs/trained_models/nlp"
         package_run.container_registry = f"https://registry.hub.docker.com/v1/repositories/contoso/nlp/{get_random_md5()}"  # noqa
-        package_run.agent_pool = f"nlp-build-pool"
+        package_run.agent_pool = "nlp-build-pool"
         package_run.build_args = ["arg1", "arg2", "arg3"]
         package_run.extended_properties = {}
-        package_run.secrets = {'credentials': 'AZURE_CREDENTIALS', 'docker_username': 'DOCKERUSERNAME', 'docker_password': 'DOCKERPASSWORD'}
+        package_run.secrets = {
+            "credentials": "AZURE_CREDENTIALS",
+            "docker_username": "DOCKERUSERNAME",
+            "docker_password": "DOCKERPASSWORD",
+        }
 
         environment_dict_package = YAML.safe_load(
             f"""
 INPUT_schemas_directory: '.parameters/schemas'
 INPUT_schemas_git_url: 'https://github.com/mlspec/mlspeclib-action-samples-schemas.git'
-INPUT_workflow_node_id: 'workflow|500.0.1|5d265f44-b919-4882-96c2-32799a7b7b76'
+INPUT_workflow_node_id: 'workflow|500.0.1|31ca83ed-8263-4c8c-8672-7a2163a34725'
 INPUT_step_name: {step_name}
 INPUT_input_parameters_base64: {train_encoded_val}
 INPUT_execution_parameters_raw: {package_run.dict_without_internal_variables()}
-INPUT_METASTORE_CREDENTIALS: {Credentials.metastore_credentials}
+INPUT_METASTORE_CREDENTIALS: {credentials}
 GITHUB_RUN_ID: {str(run_id)}
 GITHUB_WORKSPACE: '/src'
         """
@@ -232,7 +234,8 @@ def random_machine_type():
 
 
 def get_random_md5():
-    return hashlib.md5(str(random.randrange(0, 2e20)).encode('utf-8')).hexdigest()
+    return hashlib.md5(str(random.randrange(0, 2e20)).encode("utf-8")).hexdigest()
+
 
 if __name__ == "__main__":
     workflow_executor = Workflow()

@@ -23,6 +23,7 @@ steps:
     output:
       schema_type: training_result
       schema_version: 500.0.1
+    next: package
   package:
     previous: train
     input:

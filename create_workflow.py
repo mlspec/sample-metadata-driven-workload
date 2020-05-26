@@ -1,6 +1,4 @@
-import os
 import sys
-import logging
 from pathlib import Path
 import yaml as YAML
 import uuid
@@ -28,7 +26,7 @@ def main():
     workflow_string = YAML.safe_dump(workflow_dict)
     (workflow_object, errors) = MLObject.create_object_from_string(workflow_string)
 
-    credentials_packed = Credentials.metastore_credentials
+    credentials_packed = Credentials.metastore_credentials_prod
     ms = Metastore(credentials_packed)
 
     workflow_node_id = ms.create_workflow_node(workflow_object, workflow_dict["run_id"])
