@@ -22,6 +22,9 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: Debugging with tmate
+      uses: mxschmitt/action-tmate@v2    
+
     - name: MLSpec Sample Action - Process Data
       uses: mlspec/mlspeclib-action-samples-process-data@0.0.4
       with:
