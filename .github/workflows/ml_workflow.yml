@@ -30,7 +30,7 @@ jobs:
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
-        STEP_NAME: process-data
+        STEP_NAME: process_data
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
         NEXT_STEP_NAME: train
