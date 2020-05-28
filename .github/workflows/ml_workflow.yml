@@ -26,7 +26,7 @@ jobs:
 #      uses: mxschmitt/action-tmate@v2    
 
     - name: Process Data
-      uses: mlspec/mlspeclib-action-samples-process-data@0.0.12
+      uses: mlspec/mlspeclib-action-samples-process-data@0.0.13
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
