@@ -29,10 +29,10 @@ jobs:
       uses: mlspec/mlspeclib-action-samples-process-data@0.0.8
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS }}
-        workflow_node_id: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
-        step_name: process-data
-        schemas_directory: .parameters/schemas
-        schemas_git_url: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
-        next_step_name: train
-        input_parameters_file_path: $GITHUB_WORKSPACE/.parameters/process_data/input.yaml
-        execution_parameters_file_path: $GITHUB_WORKSPACE/.parameters/process_data/execution.yaml
+        WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
+        STEP_NAME: process-data
+        SCHEMAS_DIRECTORY: .parameters/schemas
+        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
+        NEXT_STEP_NAME: train
+        INPUT_PARAMETERS_FILE_PATH: $GITHUB_WORKSPACE/.parameters/process_data/input.yaml
+        EXECUTION_PARAMETERS_FILE_PATH: $GITHUB_WORKSPACE/.parameters/process_data/execution.yaml
