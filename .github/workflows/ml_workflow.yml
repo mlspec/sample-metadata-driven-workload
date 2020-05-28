@@ -34,5 +34,5 @@ jobs:
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
         NEXT_STEP_NAME: train
-        INPUT_PARAMETERS_FILE_PATH: $GITHUB_WORKSPACE/.parameters/process_data/input.yaml
-        EXECUTION_PARAMETERS_FILE_PATH: $GITHUB_WORKSPACE/.parameters/process_data/execution.yaml
+        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
