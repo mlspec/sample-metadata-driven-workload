@@ -12,8 +12,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  process_data:
+  # This workflow contains a single job called "run_full_workflow"
+  run_full_workflow:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
