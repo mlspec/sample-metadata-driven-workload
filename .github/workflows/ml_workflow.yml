@@ -12,8 +12,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  process_data:
+  # This workflow contains a single job called "run_full_workflow"
+  run_full_workflow:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -22,6 +22,35 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: docker run hello-world
+#    - name: Debugging with tmate
+#      uses: mxschmitt/action-tmate@v2    
+
+    - name: Process Data
+      id: process_data
+      uses: mlspec/mlspeclib-action-samples-process-data@0.0.21
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
+        STEP_NAME: process_data
+        SCHEMAS_DIRECTORY: .parameters/schemas
+        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
+        NEXT_STEP_NAME: train
+        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+
+    - name: Next Step
+      run: |
+        echo "What do you get ${{ steps.process_data.outputs.output_base64_encoded }}"
+
+    - name: MLSpec Sample Action - Train
+      id: train
+      uses: mlspec/mlspeclib-action-samples-train@0.0.21
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
+        STEP_NAME: train
+        SCHEMAS_DIRECTORY: .parameters/schemas
+        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
+        NEXT_STEP_NAME: package
+        INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
