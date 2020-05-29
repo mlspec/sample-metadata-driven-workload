@@ -1,0 +1,18 @@
+schema_version: 500.0.1
+nodes: 8
+cpu_per_node: 8
+ram_per_node: 64Gi
+gpu_required: true
+output_path: models/output
+training_params:
+  learning_rate: 0.1
+  loss: 0.3
+  batch_size: 1000
+  epoch: 50
+  optimizer: ['SGD']
+  other_tags:
+    pii: false
+    data_sha: 8b03f70
+schema_type: training_run
+base_image: ubuntu1804
+machine_type: NDv2
