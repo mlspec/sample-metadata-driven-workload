@@ -38,13 +38,13 @@ jobs:
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
 
-    - name: Next Step
+    - name: Output Checker
       run: |
         echo "What do you get ${{ steps.process_data.outputs.output_base64_encoded }}"
 
     - name: MLSpec Sample Action - Train
       id: train
-      uses: mlspec/mlspeclib-action-samples-train@0.0.21
+      uses: mlspec/mlspeclib-action-samples-train@0.0.22
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
@@ -54,3 +54,7 @@ jobs:
         NEXT_STEP_NAME: package
         INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
+
+    - name: Output Checker
+      run: |
+        echo "What do you get ${{ steps.train.outputs.output_base64_encoded }}"
