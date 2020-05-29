@@ -39,4 +39,4 @@ jobs:
 
     - name: Next Step
       run: |
-        echo "What do you get" ${{ steps.process_data.outputs.output_base64_encoded }}
+        echo "What do you get ${{ steps.process_data.outputs.output_base64_encoded }}" 
