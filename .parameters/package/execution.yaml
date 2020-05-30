@@ -1,0 +1,10 @@
+schema_version: 500.0.1
+schema_type: package_run
+model_source: /nfs/trained_models/nlp
+container_registry: https://registry.hub.docker.com/v1/repositories/contoso
+agent-pool: nlp-build-pool
+build-args: ["arg1", "arg2", "arg3"]
+secrets:
+  credentials: AZURE_CREDENTIALS_SECRET
+  docker_username: DOCKERUSERNAME_SECRET
+  docker_password: DOCKERPASSWORD_SECRET
