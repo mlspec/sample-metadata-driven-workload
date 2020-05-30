@@ -5,7 +5,7 @@ ram_per_node: 64Gi
 gpu_required: true
 output_path: models/output
 training_params:
-    learning_rate: 0.1
+    learning_rate: 0.01
     loss: 0.3
     batch_size: 1000
     epoch: 50
