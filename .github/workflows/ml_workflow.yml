@@ -61,7 +61,7 @@ jobs:
 
     - name: MLSpec Sample Action - Package
       id: package
-      uses: mlspec/mlspeclib-action-samples-package@0.0.24
+      uses: mlspec/mlspeclib-action-samples-package@0.0.25
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
