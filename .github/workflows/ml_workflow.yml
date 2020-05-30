@@ -71,3 +71,8 @@ jobs:
         NEXT_STEP_NAME: package
         INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
+
+    - name: Output Checker
+      run: |
+        echo "What do you get ${{ steps.package.outputs.output_raw }}"
+  
