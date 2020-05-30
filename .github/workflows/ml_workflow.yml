@@ -30,7 +30,7 @@ jobs:
       uses: mlspec/mlspeclib-action-samples-process-data@0.0.21
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
+        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
         STEP_NAME: process_data
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
@@ -47,7 +47,7 @@ jobs:
       uses: mlspec/mlspeclib-action-samples-train@0.0.22
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
+        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
         STEP_NAME: train
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
@@ -65,7 +65,7 @@ jobs:
       uses: mlspec/mlspeclib-action-samples-package@0.0.25
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        WORKFLOW_NODE_ID: 'workflow|500.0.1|68a219f6-95df-4a65-a049-286178990404'
+        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
         STEP_NAME: package
         PREVIOUS_STEP_NAME: train
         SCHEMAS_DIRECTORY: .parameters/schemas
