@@ -7,7 +7,7 @@ output_path: models/output
 training_params:
     learning_rate: 0.001
     loss: 0.3
-    batch_size: 1000
+    batch_size: 2000
     epoch: 50
     optimizer: ['SGD']
     train_op: minimize
