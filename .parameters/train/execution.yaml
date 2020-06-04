@@ -1,6 +1,6 @@
 schema_version: 500.0.1
 nodes: 8
-cpu_per_node: 8
+cpu_per_nodes: 8
 ram_per_node: 64Gi
 gpu_required: true
 output_path: models/output
