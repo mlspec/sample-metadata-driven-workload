@@ -48,7 +48,7 @@ jobs:
     - name: Run Unit Tests
       id: python_unit_tests
       run: |
-        python3 -m unittest src/**/test_*
+        python3 -m unittest discover -s src -p 'test_*.py'
 
     - name: MLSpec Action - Process Data
       uses: mlspec/mlspeclib-action-docker@0.1.0
