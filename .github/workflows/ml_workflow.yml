@@ -30,16 +30,17 @@ jobs:
         python3 -m pip install flake8
         python3 -m pip install nbconvert
         python3 -m pip install ipython
+        python3 -m pip install jupyter
 
     - name: Lint checked in code files
       id: python_linting
       run: |
-        flake8 src --count --config=.flake8 --show-source --statistics
+        python3 -m flake8 src --count --config=.flake8 --show-source --statistics
 
     - name: Convert Notebook to Script
       id: convert_notebook_to_script
       run: |
-        jupyter nbconvert notebooks/production/* --config notebooks/nbconvert_config.py
+        python3 -m jupyter nbconvert notebooks/production/* --config notebooks/nbconvert_config.py
 
     - name: Run Unit Tests
       id: python_unit_tests
