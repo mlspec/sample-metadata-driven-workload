@@ -31,6 +31,8 @@ jobs:
         python3 -m pip install nbconvert
         python3 -m pip install ipython
         python3 -m pip install jupyter
+        python3 -m pip install nbconvert
+
 
     - name: Lint checked in code files
       id: python_linting
