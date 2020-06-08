@@ -22,10 +22,31 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Debugging with tmate
-      uses: mxschmitt/action-tmate@v2    
+    - name: Setup Environment
+      id: setup_environment
+      run: |
+        python3 -m pip install -U pip
+        python3 -m pip install -r requirements.txt
+        python3 -m pip install flake8
+        python3 -m pip install nbconvert
+        python3 -m pip install ipython
 
-    - name: MLSpec Action
+    - name: Lint checked in code files
+      id: python_linting
+      run: |
+        flake8 src --count --config=.flake8 --show-source --statistics
+
+    - name: Convert Notebook to Script
+      id: convert_notebook_to_script
+      run: |
+        jupyter nbconvert notebooks/production/* --config notebooks/nbconvert_config.py
+
+    - name: Run Unit Tests
+      id: python_unit_tests
+      run: |
+        python3 -m unittest src/**/test_*
+
+    - name: MLSpec Action - Process Data
       uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
@@ -36,11 +57,10 @@ jobs:
         NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
-        EXECUTION_FILE: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/process_data.py
 
-    - name: Process Data
-      id: process_data
-      uses: mlspec/mlspeclib-action-samples-process-data@0.0.26
+    - name: MLSpec Action - Process Data
+      uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
@@ -50,43 +70,31 @@ jobs:
         NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/process_data.py
 
-    - name: Output Checker
-      run: |
-        echo "What do you get ${{ steps.process_data.outputs.output_base64_encoded }}"
-
-    - name: MLSpec Sample Action - Train
-      id: train
-      uses: mlspec/mlspeclib-action-samples-train@0.0.25
+    - name: MLSpec Action - Train
+      uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
-        STEP_NAME: train
+        STEP_NAME: process_data
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
-        PREVIOUS_STEP_NAME: process_data
-        NEXT_STEP_NAME: package
-        INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
-        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
+        NEXT_STEP_NAME: train
+        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/bork_nlg_model.py
 
-    - name: Output Checker
-      run: |
-        echo "What do you get ${{ steps.train.outputs.output_base64_encoded }}"
-
-    - name: MLSpec Sample Action - Package
-      id: package
-      uses: mlspec/mlspeclib-action-samples-package@0.0.26
+    - name: MLSpec Action - Package
+      uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
-        STEP_NAME: package
-        PREVIOUS_STEP_NAME: train
+        STEP_NAME: process_data
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
-        INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
-        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
+        NEXT_STEP_NAME: train
+        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/package.py
 
-    - name: Output Checker
-      run: |
-        echo "What do you get ${{ steps.package.outputs.output_raw }}"
-  
