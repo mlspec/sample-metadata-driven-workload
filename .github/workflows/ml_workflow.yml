@@ -43,7 +43,10 @@ jobs:
     - name: Convert Notebook to Script
       id: convert_notebook_to_script
       run: |
-        python3 -m nbconvert notebooks/production/* --config notebooks/nbconvert_config.py
+        python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
+        cp notebooks/production/*.py src/train
+        cp notebooks/production/*.json src/train
+        cp notebooks/production/*.hdf5 src/train
 
     - name: Run Unit Tests
       id: python_unit_tests
