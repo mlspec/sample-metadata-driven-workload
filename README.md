@@ -19,6 +19,3 @@ container_name: "COLLECTION_NAME"
 base64_encoded = base64.urlsafe_b64encode(credentials_unpacked.encode("utf-8"))
 final_encode_to_utf8 = str(base64_encoded, "utf-8")
 ```
-
-
-
