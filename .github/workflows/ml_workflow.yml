@@ -75,8 +75,8 @@ jobs:
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
         NEXT_STEP_NAME: train
-        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
-        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
 
     - name: MLSpec Action - Package
@@ -88,7 +88,7 @@ jobs:
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
         NEXT_STEP_NAME: train
-        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
-        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/package.py
 
