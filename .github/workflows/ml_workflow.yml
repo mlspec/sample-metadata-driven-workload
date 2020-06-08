@@ -61,20 +61,7 @@ jobs:
         NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
-        EXECUTION_FILE: ${{ github.workspace }}/src/process_data.py
-
-    - name: MLSpec Action - Process Data
-      uses: mlspec/mlspeclib-action-docker@0.1.0
-      with:
-        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
-        STEP_NAME: process_data
-        SCHEMAS_DIRECTORY: .parameters/schemas
-        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
-        NEXT_STEP_NAME: train
-        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
-        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
-        EXECUTION_FILE: ${{ github.workspace }}/src/process_data.py
+        EXECUTION_FILE: ${{ github.workspace }}/src/process_data/process_data.py
 
     - name: MLSpec Action - Train
       uses: mlspec/mlspeclib-action-docker@0.1.0
@@ -87,7 +74,7 @@ jobs:
         NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
-        EXECUTION_FILE: ${{ github.workspace }}/src/bork_nlg_model.py
+        EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
 
     - name: MLSpec Action - Package
       uses: mlspec/mlspeclib-action-docker@0.1.0
