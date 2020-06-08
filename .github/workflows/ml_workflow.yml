@@ -22,8 +22,21 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-#    - name: Debugging with tmate
-#      uses: mxschmitt/action-tmate@v2    
+    - name: Debugging with tmate
+      uses: mxschmitt/action-tmate@v2    
+
+    - name: MLSpec Action
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
+        STEP_NAME: process_data
+        SCHEMAS_DIRECTORY: .parameters/schemas
+        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
+        NEXT_STEP_NAME: train
+        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/.parameters/process_data/execution.yaml
 
     - name: Process Data
       id: process_data
