@@ -1,4 +1,4 @@
-schema_version: 500.0.1
+schema_version: 2.0.0
 schema_type: package_run
 model_source: /nfs/trained_models/nlp
 container_registry: https://registry.hub.docker.com/v1/repositories/contoso
