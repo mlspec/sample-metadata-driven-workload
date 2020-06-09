@@ -1,6 +1,7 @@
 from mlspeclib import MLSchema, MLObject
 from random import randint, random, randrange
 from pathlib import Path
+import datetime
 import uuid
 
 # THIS IS A MOCKED UP FILE. IT DOES NOT REPRESENT THE NOTEBOOK BEING EXECUTED AND IS FOR THE PURPOSE OF DEMO ONLY.
@@ -22,6 +23,7 @@ results_ml_object.training_execution_id = return_dict["training_execution_id"]
 results_ml_object.accuracy = return_dict["accuracy"]
 results_ml_object.global_step = return_dict["global_step"]
 results_ml_object.loss = return_dict["loss"]
+results_ml_object.time_finished = datetime.datetime.now()
 
 # Execution metrics
 results_ml_object.execution_profile.system_memory_utilization = random()

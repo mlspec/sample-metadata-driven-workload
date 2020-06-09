@@ -29,7 +29,7 @@ env:
   WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|5594a17a-d1df-4aff-adeb-d5e38eab7e65'
   SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
   SCHEMAS_DIRECTORY: .parameters/schemas
-  
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "run_full_workflow"
@@ -44,6 +44,23 @@ jobs:
 
     # - name: Debugging with tmate
     #   uses: mxschmitt/action-tmate@v2
+
+    - name: Output all pip packages
+      id: output_all_pip_packages
+      run: |
+        pip freeze > ~/prev_installed_requirements.txt
+
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-pip
+      with:
+        path: /usr/local/lib/
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/prev_installed_requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
 
     - name: Setup Environment
       id: setup_environment
