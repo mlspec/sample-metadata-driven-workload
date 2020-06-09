@@ -54,6 +54,7 @@ jobs:
         python3 -m unittest discover -s src -p 'test_*.py'
 
     - name: MLSpec Action - Process Data
+      id: process_data
       uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
@@ -67,28 +68,31 @@ jobs:
         EXECUTION_FILE: ${{ github.workspace }}/src/process_data/process_data.py
 
     - name: MLSpec Action - Train
+      id: train
       uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
-        STEP_NAME: process_data
+        STEP_NAME: train
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
-        NEXT_STEP_NAME: train
+        PREVIOUS_STEP_NAME: process_data
+        NEXT_STEP_NAME: package
         INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
 
     - name: MLSpec Action - Package
+      id: package
       uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
         WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
-        STEP_NAME: process_data
+        STEP_NAME: package
         SCHEMAS_DIRECTORY: .parameters/schemas
         SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
-        NEXT_STEP_NAME: train
+        PREVIOUS_STEP_NAME: train
         INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
-        EXECUTION_FILE: ${{ github.workspace }}/src/package.py
+        EXECUTION_FILE: ${{ github.workspace }}/src/package/package.py
 
