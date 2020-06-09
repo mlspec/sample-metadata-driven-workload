@@ -10,28 +10,32 @@ on:
   pull_request:
     branches: [ master ]
 
+# Base workflow:
+# workflow_2_0_0_node: workflow|workflow|2.0.0|5594a17a-d1df-4aff-adeb-d5e38eab7e65
+
+# Workflow w/ feature engineering:
+# workflow_2_1_0_node: workflow|workflow|2.0.0|22414c60-a10d-474b-9bf2-824c821ea2d8
+
+# Workflow w/ feature engineering & responsible AI:
+# workflow_2_2_0_node: workflow|workflow|2.0.0|39196178-2d3a-4794-9b15-e332240189e8
+
+# Workflow w/ feature engineering & responsible AI & kf_serving:
+# workflow_2_3_0_node: workflow|workflow|2.0.0|87f380ca-f254-4dec-9576-4572c22e539c
+
+# Workflow w/ feature engineering & responsible AI & kf_serving & aml_deploy:
+# workflow_2_4_0_node: 
+
+env:
+  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|5594a17a-d1df-4aff-adeb-d5e38eab7e65'
+  SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
+  SCHEMAS_DIRECTORY: .parameters/schemas
+  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "run_full_workflow"
   run_full_workflow:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Need to set the environment variables
-    # Base workflow:
-    # workflow_2_0_0_node: workflow|workflow|2.0.0|5594a17a-d1df-4aff-adeb-d5e38eab7e65
-
-    # Workflow w/ feature engineering:
-    # workflow_2_1_0_node: workflow|workflow|2.0.0|22414c60-a10d-474b-9bf2-824c821ea2d8
-
-    # Workflow w/ feature engineering & responsible AI:
-    # workflow_2_2_0_node: workflow|workflow|2.0.0|39196178-2d3a-4794-9b15-e332240189e8
-
-    # Workflow w/ feature engineering & responsible AI & kf_serving:
-    # workflow_2_3_0_node: workflow|workflow|2.0.0|87f380ca-f254-4dec-9576-4572c22e539c
-
-    # Workflow w/ feature engineering & responsible AI & kf_serving & aml_deploy:
-    # workflow_2_4_0_node: 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -74,10 +78,10 @@ jobs:
       uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: process_data
-        SCHEMAS_DIRECTORY: .parameters/schemas
-        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
         NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
@@ -88,10 +92,10 @@ jobs:
       uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: train
-        SCHEMAS_DIRECTORY: .parameters/schemas
-        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
         PREVIOUS_STEP_NAME: process_data
         NEXT_STEP_NAME: package
         INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
@@ -103,10 +107,10 @@ jobs:
       uses: mlspec/mlspeclib-action-docker@0.1.0
       with:
         METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        WORKFLOW_NODE_ID: 'workflow|500.0.1|17141130-b02d-4472-9146-74e8c01c724d'
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: package
-        SCHEMAS_DIRECTORY: .parameters/schemas
-        SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
         PREVIOUS_STEP_NAME: train
         INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
