@@ -130,7 +130,7 @@ jobs:
         STEP_NAME: train
         PREVIOUS_STEP_NAME: feature_engineering
         NEXT_STEP_NAME: package
-        INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
+        INPUT_PARAMETERS_BASE64: ${{ steps.feature_engineering.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
 
