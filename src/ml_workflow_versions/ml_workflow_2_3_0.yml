@@ -22,9 +22,6 @@ on:
 # Workflow w/ feature engineering & responsible AI & kf_serving:
 # workflow_2_3_0_node: workflow|workflow|2.0.0|e9e3b723-a337-4de9-a221-03dfd178a6ad
 
-# Workflow w/ feature engineering & responsible AI & kf_serving & aml_deploy:
-# workflow_2_4_0_node: 
-
 env:
   WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|e9e3b723-a337-4de9-a221-03dfd178a6ad'
   SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git

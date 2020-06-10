@@ -20,10 +20,7 @@ on:
 # workflow_2_2_0_node: workflow|workflow|2.0.0|42804cf5-cd45-4a50-ad64-ea0150b9e494
 
 # Workflow w/ feature engineering & responsible AI & kf_serving:
-# workflow_2_3_0_node: 
-
-# Workflow w/ feature engineering & responsible AI & kf_serving & aml_deploy:
-# workflow_2_4_0_node: 
+# workflow_2_3_0_node: workflow|workflow|2.0.0|e9e3b723-a337-4de9-a221-03dfd178a6ad
 
 env:
   WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|42804cf5-cd45-4a50-ad64-ea0150b9e494'
