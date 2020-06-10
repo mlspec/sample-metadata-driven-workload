@@ -48,14 +48,15 @@ jobs:
     - name: Output all pip packages
       id: output_all_pip_packages
       run: |
-        pip freeze > ~/prev_installed_requirements.txt
+        pipenv shell
+        pipenv lock -r > ~/prev_installed_requirements.txt
 
     - name: Cache Pip Installation
       uses: actions/cache@v2
       env:
         cache-name: cache-python36-pip
       with:
-        path: /usr/local/lib/python3.6
+        path: ~/.local
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/prev_installed_requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -65,6 +66,7 @@ jobs:
     - name: Setup Environment
       id: setup_environment
       run: |
+        pipenv shell
         python3 -m pip install -U setuptools wheel pip
         python3 -m pip install -r requirements.txt
         python3 -m pip install flake8
@@ -75,11 +77,13 @@ jobs:
     - name: Lint checked in code files
       id: python_linting
       run: |
+        pipenv shell
         python3 -m flake8 src --count --config=.flake8 --show-source --statistics
 
     - name: Convert Notebook to Script
       id: convert_notebook_production_folder_to_script
       run: |
+        pipenv shell
         python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
         cp notebooks/production/*.py src/train
         cp notebooks/production/*.json data/raw
@@ -88,6 +92,7 @@ jobs:
     - name: Run Unit Tests
       id: python_unit_tests
       run: |
+        pipenv shell
         python3 -m unittest discover -s src -p 'test_*.py'
 
     - name: MLSpec Action - Process Data
