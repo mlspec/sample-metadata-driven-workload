@@ -3,6 +3,7 @@ from random import randint, random, randrange
 from pathlib import Path
 import datetime
 import uuid
+
 # from interpret.blackbox import PartialDependence, MorrisSensitivity
 
 from unittest.mock import MagicMock
@@ -61,16 +62,21 @@ results_ml_object.set_type(
 
 
 results_ml_object = MLObject()
-results_ml_object.set_type('2.2.0', 'serve_result')
+results_ml_object.set_type("2.2.0", "serve_result")
+
+action_name = 'deploy_model'
+model_package = 'contoso_bork_model:1.3.1'
 
 # Below is how you would execute a Kubeflow Serving deployment
-external_command = f"kubectl run pipeline {pipeline_name} repo@{repo_hash}"
+external_command = f"kubectl run pipeline {action_name} --container={model_package}"
 result_of_deploy_to_kf_serving_command = subprocess.Popen(
     external_command, shell=True, stdout=subprocess.PIPE
 ).stdout.read()
 
 results_ml_object.extended_properties = {}
-results_ml_object.extended_properties['result_of_start_kf_deploy_command'] = result_of_deploy_to_kf_serving_command
+results_ml_object.extended_properties[
+    "result_of_start_kf_deploy_command"
+] = result_of_deploy_to_kf_serving_command
 model_service_name = subprocess.Popen(
     external_command, shell=True, stdout=subprocess.PIPE
 ).stdout.job_id()
@@ -79,10 +85,10 @@ return_dict = {}
 finished_time = None
 while finished_time is None:
     external_command = f"kubectl get svc f{model_service_name}"
-    results_ml_object.extended_properties['deploy_finished'] = subprocess.Popen(
+    results_ml_object.extended_properties["deploy_finished"] = subprocess.Popen(
         external_command, shell=True, stdout=subprocess.PIPE
     ).stdout.read()
-    if results_ml_object.extended_properties['deploy_finished'] is not None:
+    if results_ml_object.extended_properties["deploy_finished"] is not None:
         finished_time = datetime.datetime.now()
 
 #
@@ -113,11 +119,11 @@ while finished_time is None:
 #     raise AMLDeploymentException(f"Model deployment failedlogs: {service_logs} \nexception: {exception}")
 
 # Mocked up (you'd get this from the result of the deployment)
-results_ml_object.serving_endpoint = 'https://bork.models.svc.contoso.internal'
-results_ml_object.serving_port = '8888'
+results_ml_object.serving_endpoint = "https://bork.models.svc.contoso.internal"
+results_ml_object.serving_port = "8888"
 
 finished_time = datetime.datetime.now()
-results_ml_object.extended_properties = {'finished_time': finished_time}
+results_ml_object.extended_properties = {"finished_time": finished_time}
 
 # Execution metrics
 results_ml_object.execution_profile.system_memory_utilization = random()
