@@ -112,7 +112,8 @@ jobs:
         SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
         SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
         WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
-        STEP_NAME: process_data
+        STEP_NAME: feature_engineering
+        PREVIOUS_STEP_NAME: process_data
         NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ steps.process_data.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/feature_engineering/execution.yaml
