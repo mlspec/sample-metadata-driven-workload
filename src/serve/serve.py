@@ -52,16 +52,13 @@ timer = MagicMock()
 # input_object = MagicMock()
 # execution_object = MagicMock()
 # results_ml_object = MagicMock()
-# result_ml_object_schema_type = 'feature_engineering_result'
-# result_ml_object_schema_version = '2.1.0'
+# result_ml_object_schema_type = 'serve_result'
+# result_ml_object_schema_version = '2.2.0'
 
 results_ml_object.set_type(
     schema_type=result_ml_object_schema_type,  # noqa
     schema_version=result_ml_object_schema_version,  # noqa
 )
-
-results_ml_object = MLObject()
-results_ml_object.set_type("2.2.0", "serve_result")
 
 action_name = "deploy_model"
 model_package = "contoso_bork_model:1.3.1"
