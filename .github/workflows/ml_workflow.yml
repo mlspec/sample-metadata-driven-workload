@@ -45,7 +45,7 @@ jobs:
     - name: Output all pip packages
       id: output_all_pip_packages
       run: |
-        pip freeze > ~/prev_installed_requirements.txt
+        python3 -m pip freeze > ~/prev_installed_requirements.txt
 
     - name: Cache Pip Installation
       uses: actions/cache@v2
@@ -62,12 +62,12 @@ jobs:
     - name: Setup Environment
       id: setup_environment
       run: |
-        pip install -U setuptools wheel pip
-        pip install -r requirements.txt
-        pip install -U flake8
-        pip install -U ipython
-        pip install -U jupyter 
-        pip install -U nbconvert
+        python3 -m pip install -U setuptools wheel pip
+        python3 -m pip install -r requirements.txt
+        python3 -m pip install -U flake8
+        python3 -m pip install -U ipython
+        python3 -m pip install -U jupyter 
+        python3 -m pip install -U nbconvert
 
     - name: Debugging with tmate
       uses: mxschmitt/action-tmate@v2
