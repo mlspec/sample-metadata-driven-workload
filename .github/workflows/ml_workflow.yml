@@ -48,7 +48,7 @@ jobs:
     - name: Output all pip packages
       id: output_all_pip_packages
       run: |
-        pip freeze -r > ~/prev_installed_requirements.txt
+        pip freeze > ~/prev_installed_requirements.txt
 
     - name: Cache Pip Installation
       uses: actions/cache@v2
