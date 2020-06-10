@@ -48,7 +48,7 @@ jobs:
     - name: Output all pip packages
       id: output_all_pip_packages
       run: |
-        pip freeze -r > ~/prev_installed_requirements.txt
+        python3 -m pip freeze > ~/prev_installed_requirements.txt
 
     - name: Cache Pip Installation
       uses: actions/cache@v2
@@ -65,24 +65,25 @@ jobs:
     - name: Setup Environment
       id: setup_environment
       run: |
-        pipenv shell
-        pip install -U setuptools wheel pip
-        pip install -r requirements.txt
-        pip install -U flake8
-        pip install -U ipython
-        pip install -U jupyter 
-        pip install -U nbconvert
+        python3 -m pip install -U setuptools wheel pip
+        python3 -m pip install -r requirements.txt
+        python3 -m pip install -U flake8
+        python3 -m pip install -U ipython
+        python3 -m pip install -U jupyter 
+        python3 -m pip install -U nbconvert
+
+    # - name: Debugging with tmate
+    #   uses: mxschmitt/action-tmate@v2
 
     - name: Lint checked in code files
       id: python_linting
       run: |
-        flake8 src --count --config=.flake8 --show-source --statistics
+        python3 -m flake8 src --count --config=.flake8 --show-source --statistics
 
     - name: Convert Notebook to Script
       id: convert_notebook_production_folder_to_script
       run: |
-        pipenv shell
-        nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
+        python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
         cp notebooks/production/*.py src/train
         cp notebooks/production/*.json data/raw
         cp notebooks/production/*.hdf5 data/raw
