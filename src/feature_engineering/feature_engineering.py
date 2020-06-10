@@ -43,6 +43,8 @@ from unittest.mock import MagicMock
 subprocess = MagicMock()
 popen_return = MagicMock()
 popen_return.stdout.read.return_value = "Popen job result would go here."
+popen_return.stdout.job_id.return_value = uuid.uuid4().hex  # Fake hash
+
 subprocess.Popen.return_value = popen_return
 timer = MagicMock()
 
@@ -70,11 +72,14 @@ result_of_start_pipeline_command = subprocess.Popen(
 
 results_ml_object.extended_properties = {}
 results_ml_object.extended_properties['result_of_start_pipeline_command'] = result_of_start_pipeline_command
+job_id = subprocess.Popen(
+    external_command, shell=True, stdout=subprocess.PIPE
+).stdout.job_id()
 
 return_dict = {}
 finished_time = None
 while finished_time is None:
-    external_command = f"pachctl query job id={results_ml_object.extended_properties['result_of_command']}"
+    external_command = f"pachctl query job id={job_id}"
     results_ml_object.extended_properties['job_finished'] = subprocess.Popen(
         external_command, shell=True, stdout=subprocess.PIPE
     ).stdout.read()
