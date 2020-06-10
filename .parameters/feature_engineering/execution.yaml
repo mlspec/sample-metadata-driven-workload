@@ -1,4 +1,4 @@
-schema_version: 2.2.0
+schema_version: 2.1.0
 nodes: 10
 cpu_per_node: 4
 ram_per_node: 64Gi
@@ -14,7 +14,7 @@ training_params:
     other_tags:
         pii: false
         data_sha: 8b03f70
-schema_type: responsible_ai_run
+schema_type: feature_engineering_run
 base_image: ubuntu1804
 machine_type: NDv2
         
