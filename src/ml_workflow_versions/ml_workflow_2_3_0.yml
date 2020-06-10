@@ -104,6 +104,21 @@ jobs:
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/process_data/process_data.py
 
+    - name: MLSpec Action - Feature Engineering
+      id: feature_engineering
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: feature_engineering
+        PREVIOUS_STEP_NAME: process_data
+        NEXT_STEP_NAME: train
+        INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/feature_engineering/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/feature_engineering/feature_engineering.py
+
     - name: MLSpec Action - Train
       id: train
       uses: mlspec/mlspeclib-action-docker@0.1.0
