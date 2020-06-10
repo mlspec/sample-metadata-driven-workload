@@ -64,9 +64,12 @@ repo_hash = "b52063c"
 
 # Below is how you would execute a Pachyderm data processing job on a Pachyderm deployment
 external_command = f"pachctl run pipeline {pipeline_name} repo@{repo_hash}"
-results_ml_object.extended_properties['result_of_start_pipeline_command'] = subprocess.Popen(
+result_of_start_pipeline_command = subprocess.Popen(
     external_command, shell=True, stdout=subprocess.PIPE
 ).stdout.read()
+
+results_ml_object.extended_properties = {}
+results_ml_object.extended_properties['result_of_start_pipeline_command'] = result_of_start_pipeline_command
 
 return_dict = {}
 finished_time = None
@@ -111,7 +114,7 @@ results_ml_object.feature_file_path = return_dict["feature_file_path"]
 # NEW FIELDS
 results_ml_object.engineered_data_path = return_dict["engineered_data_path"]
 results_ml_object.feature_engineering_steps = return_dict["feature_engineering_steps"]
-results_ml_object.extended_properties = {'finished_time': finished_time}
+results_ml_object.extended_properties['finished_time'] = finished_time
 
 # Execution metrics
 results_ml_object.execution_profile.system_memory_utilization = random()
