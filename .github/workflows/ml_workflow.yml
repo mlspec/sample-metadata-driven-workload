@@ -26,7 +26,7 @@ on:
 # workflow_2_4_0_node: 
 
 env:
-  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|39196178-2d3a-4794-9b15-e332240189e8'
+  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|9896b963-177d-4c3e-8b3d-c31d517eff49'
   SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
   SCHEMAS_DIRECTORY: .parameters/schemas
 

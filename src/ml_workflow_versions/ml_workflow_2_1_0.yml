@@ -17,10 +17,10 @@ on:
 # workflow_2_1_0_node: workflow|workflow|2.0.0|22414c60-a10d-474b-9bf2-824c821ea2d8
 
 # Workflow w/ feature engineering & responsible AI:
-# workflow_2_2_0_node: workflow|workflow|2.0.0|42804cf5-cd45-4a50-ad64-ea0150b9e494
+# workflow_2_2_0_node: 
 
 # Workflow w/ feature engineering & responsible AI & kf_serving:
-# workflow_2_3_0_node: workflow|workflow|2.0.0|9896b963-177d-4c3e-8b3d-c31d517eff49
+# workflow_2_3_0_node: 
 
 # Workflow w/ feature engineering & responsible AI & kf_serving & aml_deploy:
 # workflow_2_4_0_node: 
