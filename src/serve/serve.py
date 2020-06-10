@@ -60,12 +60,11 @@ results_ml_object.set_type(
     schema_version=result_ml_object_schema_version,  # noqa
 )
 
-
 results_ml_object = MLObject()
 results_ml_object.set_type("2.2.0", "serve_result")
 
-action_name = 'deploy_model'
-model_package = 'contoso_bork_model:1.3.1'
+action_name = "deploy_model"
+model_package = "contoso_bork_model:1.3.1"
 
 # Below is how you would execute a Kubeflow Serving deployment
 external_command = f"kubectl run pipeline {action_name} --container={model_package}"
