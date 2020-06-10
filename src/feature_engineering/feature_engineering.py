@@ -4,7 +4,43 @@ from pathlib import Path
 import datetime
 import uuid
 
-# THIS IS A MOCKED UP FILE. IT DOES NOT REPRESENT THE NOTEBOOK BEING EXECUTED AND IS FOR THE PURPOSE OF DEMO ONLY.
+from unittest.mock import MagicMock
+
+# This file has the following variables:
+#         workflow_object = an MLObject of the current workflow
+#         input_object = an MLObject of the current input to this step
+#         execution_object = an MLObject of the current execution to this step
+#         step_name = string of the name of this step.
+#         parameters.GITHUB_RUN_ID = a UUID of this run (provided by Github)
+#
+# Additionally, GitHub provides a number of variables as environement variables including:
+#
+#     CI	                Always set to true.
+#     HOME	                The path to the GitHub home directory used to store user data. For example, /github/home.
+#     GITHUB_WORKFLOW	    The name of the workflow.
+#     GITHUB_RUN_ID	        A unique number for each run within a repository. This number does not change if you re-run the workflow run.
+#     GITHUB_RUN_NUMBER	    A unique number for each run of a particular workflow in a repository. This number begins at 1 for the workflow's first run,
+#                           and increments with each new run. This number does not change if you re-run the workflow run.
+#     GITHUB_ACTION	        The unique identifier (id) of the action.
+#     GITHUB_ACTIONS	    Always set to true when GitHub Actions is running the workflow. You can use this variable to differentiate when tests are
+#                           being run locally or by GitHub Actions.
+#     GITHUB_ACTOR	        The name of the person or app that initiated the workflow. For example, octocat.
+#     GITHUB_REPOSITORY	    The owner and repository name. For example, octocat/Hello-World.
+#     GITHUB_EVENT_NAME	    The name of the webhook event that triggered the workflow.
+#     GITHUB_EVENT_PATH	    The path of the file with the complete webhook event payload. For example, /github/workflow/event.json.
+#     GITHUB_WORKSPACE	    The GitHub workspace directory path. The workspace directory contains a subdirectory with a copy of your repository if your
+#                           workflow uses the actions/checkout action. If you don't use the actions/checkout action, the directory will be empty.
+#                           For example, /home/runner/work/my-repo-name/my-repo-name.
+#     GITHUB_SHA	        The commit SHA that triggered the workflow. For example, ffac537e6cbbf934b08745a378932722df287a53.
+#     GITHUB_REF	        The branch or tag ref that triggered the workflow. For example, refs/heads/feature-branch-1. If neither a branch or tag is
+#                           available for the event type, the variable will not exist.
+#     GITHUB_HEAD_REF	    Only set for forked repositories. The branch of the head repository.
+#     GITHUB_BASE_REF	    Only set for forked repositories. The branch of the base repository.
+#
+# You can read more about these here - https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables
+
+# The code below is for mocking to make the rest of the code look legit
+
 
 results_ml_object.set_type(
     schema_type=result_ml_object_schema_type,  # noqa
@@ -12,6 +48,18 @@ results_ml_object.set_type(
 )
 
 # Mocked up results
+pipeline_name = INPUT_PARAMETERS.get("PIPELINE_NAME", "")
+repo_hash = "b52063c"
+external_command = f"pachctl run pipeline {pipeline_name} repo@{repo_hash}"
+result_of_command = subprocess.Popen(
+    external_command, shell=True, stdout=subprocess.PIPE
+).stdout.read()
+
+return_dict = {}
+while return_dict == {}:
+    input_object,
+    execution_object,
+
 return_dict = {
     "data_output_path": str(Path("/data/contoso/bork_model/raw_data/").absolute()),
     "data_statistics_path": str(
@@ -19,7 +67,9 @@ return_dict = {
     ),
     "data_schemas_path": str(Path("/data/contoso/bork_model/schemas/").absolute()),
     "feature_file_path": str(Path("/data/contoso/bork_model/features/").absolute()),
-    "engineered_data_path": str(Path("/data/contoso/bork_model/engineered_data/").absolute()),
+    "engineered_data_path": str(
+        Path("/data/contoso/bork_model/engineered_data/").absolute()
+    ),
     "feature_engineering_steps": [
         'r"[^\x00-\x7F]+"   # Filter sentences with non-Ascii',
         "tokenize_for_bigrams(sentence)  # returns a tokenized sentence",
