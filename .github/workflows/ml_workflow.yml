@@ -42,9 +42,6 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # - name: Debugging with tmate
-    #   uses: mxschmitt/action-tmate@v2
-
     - name: Output all pip packages
       id: output_all_pip_packages
       run: |
@@ -72,16 +69,18 @@ jobs:
         pip install -U jupyter 
         pip install -U nbconvert
 
+    - name: Debugging with tmate
+      uses: mxschmitt/action-tmate@v2
+
     - name: Lint checked in code files
       id: python_linting
       run: |
-        flake8 src --count --config=.flake8 --show-source --statistics
+        python3 -m flake8 src --count --config=.flake8 --show-source --statistics
 
     - name: Convert Notebook to Script
       id: convert_notebook_production_folder_to_script
       run: |
-        pipenv shell
-        nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
+        python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
         cp notebooks/production/*.py src/train
         cp notebooks/production/*.json data/raw
         cp notebooks/production/*.hdf5 data/raw
