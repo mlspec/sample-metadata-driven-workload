@@ -115,7 +115,7 @@ jobs:
         STEP_NAME: feature_engineering
         PREVIOUS_STEP_NAME: process_data
         NEXT_STEP_NAME: train
-        INPUT_PARAMETERS_FILE_PATH: ${{ steps.process_data.outputs.output_base64_encoded }}
+        INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/feature_engineering/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/feature_engineering/feature_engineering.py
 
