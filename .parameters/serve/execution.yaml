@@ -6,4 +6,4 @@ gpu_required: true
 schema_type: serve_run
 base_image: ubuntu1804
 machine_type: NDv2
-        
+serving_endpoint: 'https://bork.models.svc.contoso.internal:8888'        

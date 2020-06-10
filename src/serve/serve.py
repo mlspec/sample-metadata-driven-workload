@@ -63,7 +63,7 @@ results_ml_object.set_type(
 results_ml_object = MLObject()
 results_ml_object.set_type('2.2.0', 'serve_result')
 
-# Below is how you would execute a Pachyderm data processing job on a Pachyderm deployment
+# Below is how you would execute a Kubeflow Serving deployment
 external_command = f"kubectl run pipeline {pipeline_name} repo@{repo_hash}"
 result_of_deploy_to_kf_serving_command = subprocess.Popen(
     external_command, shell=True, stdout=subprocess.PIPE
@@ -85,7 +85,34 @@ while finished_time is None:
     if results_ml_object.extended_properties['deploy_finished'] is not None:
         finished_time = datetime.datetime.now()
 
+#
+# Swap out above if we want to deploy to AML
+#
 
+# # Deploying model
+# print("::debug::Deploying model")
+# try:
+#     # Default service name
+#     repository_name = os.environ.get("GITHUB_REPOSITORY").split("/")[-1]
+#     branch_name = os.environ.get("GITHUB_REF").split("/")[-1]
+#     default_service_name = f"{repository_name}-{branch_name}".lower().replace("_", "-")[:32]
+
+#     service = Model.deploy(
+#         workspace=ws,
+#         name=parameters.get("name", default_service_name),
+#         models=[model],
+#         inference_config=inference_config,
+#         deployment_config=deployment_config,
+#         deployment_target=deployment_target,
+#         overwrite=True
+#     )
+#     service.wait_for_deployment(show_output=True)
+# except WebserviceException as exception:
+#     print(f"::error::Model deployment failed with exception: {exception}")
+#     service_logs = service.get_logs()
+#     raise AMLDeploymentException(f"Model deployment failedlogs: {service_logs} \nexception: {exception}")
+
+# Mocked up (you'd get this from the result of the deployment)
 results_ml_object.serving_endpoint = 'https://bork.models.svc.contoso.internal'
 results_ml_object.serving_port = '8888'
 
