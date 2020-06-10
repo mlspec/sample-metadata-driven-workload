@@ -10,6 +10,7 @@ jupyter = "*"
 nbconvert = "*"
 pandas = "*"
 tabulate = "*"
+pillow = ">=6.2.2"
 
 [packages]
 mlspeclib = "*"

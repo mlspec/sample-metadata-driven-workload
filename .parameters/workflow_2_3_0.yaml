@@ -43,10 +43,10 @@ steps:
       schema_version: 2.0.0
     execution:
       schema_type: responsible_ai_run
-      schema_version: 2.1.0
+      schema_version: 2.2.0
     output:
       schema_type: responsible_ai_result
-      schema_version: 2.1.0
+      schema_version: 2.2.0
     next: package
   package:
     previous: train

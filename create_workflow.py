@@ -16,7 +16,7 @@ def main():
     MLSchema.append_schema_to_registry(Path(".parameters") / "schemas")
 
     workflow_version = "2.0.0"
-    workflow_path = (Path(".parameters") / "workflow_2_3_0.yaml")
+    workflow_path = (Path(".parameters") / "workflow_2_2_0.yaml")
     workflow_input_string = YAML.safe_dump(workflow_path.read_text())
     workflow_dict = YAML.safe_load(YAML.safe_load(workflow_input_string))
     workflow_dict["workflow_version"] = workflow_version
