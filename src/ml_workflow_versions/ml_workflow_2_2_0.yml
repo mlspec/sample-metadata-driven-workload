@@ -26,7 +26,7 @@ on:
 # workflow_2_4_0_node: 
 
 env:
-  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|22414c60-a10d-474b-9bf2-824c821ea2d8'
+  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|39196178-2d3a-4794-9b15-e332240189e8'
   SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
   SCHEMAS_DIRECTORY: .parameters/schemas
 
@@ -128,10 +128,25 @@ jobs:
         WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: train
         PREVIOUS_STEP_NAME: feature_engineering
-        NEXT_STEP_NAME: package
+        NEXT_STEP_NAME: responsible_ai
         INPUT_PARAMETERS_BASE64: ${{ steps.feature_engineering.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
+
+    - name: MLSpec Action - Responsible AI
+      id: responsible_ai
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: train
+        PREVIOUS_STEP_NAME: train
+        NEXT_STEP_NAME: package
+        INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/responsible_ai/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/responsible_ai/responsible_ai.py
 
     - name: MLSpec Action - Package
       id: package

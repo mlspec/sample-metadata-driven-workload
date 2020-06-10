@@ -26,7 +26,7 @@ on:
 # workflow_2_4_0_node: 
 
 env:
-  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|22414c60-a10d-474b-9bf2-824c821ea2d8'
+  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|5594a17a-d1df-4aff-adeb-d5e38eab7e65'
   SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
   SCHEMAS_DIRECTORY: .parameters/schemas
 
@@ -99,24 +99,10 @@ jobs:
         SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
         WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: process_data
-        NEXT_STEP_NAME: feature_engineering
+        NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/process_data/process_data.py
-
-    - name: MLSpec Action - Feature Engineering
-      id: feature_engineering
-      uses: mlspec/mlspeclib-action-docker@0.1.0
-      with:
-        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
-        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
-        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
-        STEP_NAME: process_data
-        NEXT_STEP_NAME: train
-        INPUT_PARAMETERS_FILE_PATH: ${{ steps.process_data.outputs.output_base64_encoded }}
-        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/feature_engineering/execution.yaml
-        EXECUTION_FILE: ${{ github.workspace }}/src/feature_engineering/feature_engineering.py
 
     - name: MLSpec Action - Train
       id: train
@@ -127,9 +113,9 @@ jobs:
         SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
         WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: train
-        PREVIOUS_STEP_NAME: feature_engineering
+        PREVIOUS_STEP_NAME: process_data
         NEXT_STEP_NAME: package
-        INPUT_PARAMETERS_BASE64: ${{ steps.feature_engineering.outputs.output_base64_encoded }}
+        INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
 
