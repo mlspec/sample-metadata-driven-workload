@@ -142,7 +142,7 @@ jobs:
         SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
         SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
         WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
-        STEP_NAME: train
+        STEP_NAME: responsible_ai
         PREVIOUS_STEP_NAME: train
         NEXT_STEP_NAME: package
         INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
@@ -158,7 +158,7 @@ jobs:
         SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
         WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: package
-        PREVIOUS_STEP_NAME: train
+        PREVIOUS_STEP_NAME: responsible_ai
         INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/package/package.py
