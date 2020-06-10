@@ -82,7 +82,6 @@ jobs:
       run: |
         python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
         cp notebooks/production/*.py src/train
-        cp notebooks/production/*.csv data/raw
         cp notebooks/production/*.json data/raw
         cp notebooks/production/*.hdf5 data/raw
 
