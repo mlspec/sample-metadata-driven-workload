@@ -18,6 +18,7 @@ results_ml_object.data_output_path = return_dict["data_output_path"]
 results_ml_object.data_statistics_path = return_dict["data_statistics_path"]
 results_ml_object.data_schemas_path = return_dict["data_schemas_path"]
 results_ml_object.feature_file_path = return_dict["feature_file_path"]
+results_ml_object.extended_properties = {'finished_time': finished_time}
 
 # Execution metrics
 results_ml_object.execution_profile.system_memory_utilization = random()

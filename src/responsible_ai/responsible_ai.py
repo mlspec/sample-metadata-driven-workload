@@ -3,6 +3,7 @@ from random import randint, random, randrange
 from pathlib import Path
 import datetime
 import uuid
+# from interpret.blackbox import PartialDependence, MorrisSensitivity
 
 from unittest.mock import MagicMock
 
@@ -40,11 +41,13 @@ from unittest.mock import MagicMock
 # You can read more about these here - https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables
 
 # The code below is for mocking to make the rest of the code look legit
-subprocess = MagicMock()
-popen_return = MagicMock()
-popen_return.stdout.read.return_value = "Popen job result would go here."
-subprocess.Popen.return_value = popen_return
-timer = MagicMock()
+# subprocess = MagicMock()
+# popen_return = MagicMock()
+# popen_return.stdout.read.return_value = "Popen job result would go here."
+# subprocess.Popen.return_value = popen_return
+# timer = MagicMock()
+
+MorrisSensitivity = MagicMock()
 
 # Below is for testing - comment out when live
 # input_object = MagicMock()
@@ -58,59 +61,13 @@ results_ml_object.set_type(
     schema_version=result_ml_object_schema_version,  # noqa
 )
 
-# Mocked up execution
-pipeline_name = "filter_and_tokenize"
-repo_hash = "b52063c"
+finished_time = datetime.datetime.now()
 
-# Below is how you would execute a Pachyderm data processing job on a Pachyderm deployment
-external_command = f"pachctl run pipeline {pipeline_name} repo@{repo_hash}"
-results_ml_object.extended_properties['result_of_start_pipeline_command'] = subprocess.Popen(
-    external_command, shell=True, stdout=subprocess.PIPE
-).stdout.read()
-
-return_dict = {}
-finished_time = None
-while finished_time is None:
-    external_command = f"pachctl query job id={results_ml_object.extended_properties['result_of_command']}"
-    results_ml_object.extended_properties['job_finished'] = subprocess.Popen(
-        external_command, shell=True, stdout=subprocess.PIPE
-    ).stdout.read()
-    if results_ml_object.extended_properties['job_finished'] is not None:
-        finished_time = datetime.datetime.now()
-
-# We're mocking up the idea that the data is all being written to a common share.
-# This could come from Pachyderm directly (we'd do something like the following)
-#
-#     external_command = f"pachctl get job-information id={job-info}"
-#     return_dict = subprocess.Popen(
-#         external_command, shell=True, stdout=subprocess.PIPE
-#     ).stdout.read()
-
-return_dict = {
-    "data_output_path": str(Path("/data/contoso/bork_model/raw_data/").absolute()),
-    "data_statistics_path": str(
-        Path("/data/contoso/bork_model/statistics/").absolute()
-    ),
-    "data_schemas_path": str(Path("/data/contoso/bork_model/schemas/").absolute()),
-    "feature_file_path": str(Path("/data/contoso/bork_model/features/").absolute()),
-    "engineered_data_path": str(
-        Path("/data/contoso/bork_model/engineered_data/").absolute()
-    ),
-    "feature_engineering_steps": [
-        'r"[^\x00-\x7F]+"   # Filter sentences with non-Ascii',
-        "tokenize_for_bigrams(sentence)  # returns a tokenized sentence",
-        "eliminate_stop_words(sentence)  # detects stop words and eliminates them if necessary",
-    ],
-}
-
-results_ml_object.data_output_path = return_dict["data_output_path"]
-results_ml_object.data_statistics_path = return_dict["data_statistics_path"]
-results_ml_object.data_schemas_path = return_dict["data_schemas_path"]
-results_ml_object.feature_file_path = return_dict["feature_file_path"]
-
-# NEW FIELDS
-results_ml_object.engineered_data_path = return_dict["engineered_data_path"]
-results_ml_object.feature_engineering_steps = return_dict["feature_engineering_steps"]
+# results_ml_object.morris_sensitivity = MorrisSensitivity(predict_fn=blackbox_model.predict_proba, data=X_train)
+# results_ml_object.partial_dependence = PartialDependence(predict_fn=blackbox_model.predict_proba, data=X_train)
+results_ml_object.disparate_impact = randint(0, 30) / 100
+results_ml_object.bias_in_source_data = randint(0, 6) / 100
+results_ml_object.top_features_affecting_performance = ['source_data', 'length', 'gender']
 results_ml_object.extended_properties = {'finished_time': finished_time}
 
 # Execution metrics

@@ -21,6 +21,7 @@ scipy = "*"
 keras = "*"
 requests = "*"
 tensorflow = "*"
+interpret = "*"
 
 [requires]
 python_version = "3.6"

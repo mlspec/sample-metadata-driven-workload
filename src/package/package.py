@@ -39,6 +39,7 @@ results_ml_object.model_source.servable_model.path = return_dict["model_source"]
 results_ml_object.serving_container_image.container_image_url = return_dict[
     "serving_container_image"
 ]["container_image_url"]
+results_ml_object.extended_properties = {'finished_time': finished_time}
 
 # Execution metrics
 results_ml_object.execution_profile.system_memory_utilization = random()

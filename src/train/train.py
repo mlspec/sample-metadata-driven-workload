@@ -24,6 +24,7 @@ results_ml_object.accuracy = return_dict["accuracy"]
 results_ml_object.global_step = return_dict["global_step"]
 results_ml_object.loss = return_dict["loss"]
 results_ml_object.time_finished = datetime.datetime.now()
+results_ml_object.extended_properties = {'finished_time': finished_time}
 
 # Execution metrics
 results_ml_object.execution_profile.system_memory_utilization = random()
