@@ -50,12 +50,12 @@ jobs:
       run: |
         pip freeze > ~/prev_installed_requirements.txt
 
-    - name: Cache node modules
+    - name: Cache Pip Installation
       uses: actions/cache@v2
       env:
-        cache-name: cache-pip
+        cache-name: cache-python36-pip
       with:
-        path: /usr/local/lib/
+        path: /usr/local/lib/python3.6
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/prev_installed_requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -78,12 +78,13 @@ jobs:
         python3 -m flake8 src --count --config=.flake8 --show-source --statistics
 
     - name: Convert Notebook to Script
-      id: convert_notebook_to_script
+      id: convert_notebook_production_folder_to_script
       run: |
         python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
         cp notebooks/production/*.py src/train
-        cp notebooks/production/*.json src/train
-        cp notebooks/production/*.hdf5 src/train
+        cp notebooks/production/*.csv data/raw
+        cp notebooks/production/*.json data/raw
+        cp notebooks/production/*.hdf5 data/raw
 
     - name: Run Unit Tests
       id: python_unit_tests
