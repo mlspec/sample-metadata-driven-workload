@@ -23,7 +23,7 @@ on:
 # workflow_2_3_0_node: workflow|workflow|2.0.0|e9e3b723-a337-4de9-a221-03dfd178a6ad
 
 env:
-  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|22414c60-a10d-474b-9bf2-824c821ea2d8'
+  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|e9e3b723-a337-4de9-a221-03dfd178a6ad'
   SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
   SCHEMAS_DIRECTORY: .parameters/schemas
 
@@ -45,7 +45,7 @@ jobs:
     - name: Output all pip packages
       id: output_all_pip_packages
       run: |
-        python3 -m pip freeze > ~/prev_installed_requirements.txt
+        pip freeze > ~/prev_installed_requirements.txt
 
     - name: Cache Pip Installation
       uses: actions/cache@v2
@@ -64,13 +64,10 @@ jobs:
       run: |
         python3 -m pip install -U setuptools wheel pip
         python3 -m pip install -r requirements.txt
-        python3 -m pip install -U flake8
-        python3 -m pip install -U ipython
-        python3 -m pip install -U jupyter 
-        python3 -m pip install -U nbconvert
-
-    # - name: Debugging with tmate
-    #   uses: mxschmitt/action-tmate@v2
+        python3 -m pip install flake8
+        python3 -m pip install ipython
+        python3 -m pip install jupyter 
+        python3 -m pip install nbconvert
 
     - name: Lint checked in code files
       id: python_linting
@@ -99,7 +96,7 @@ jobs:
         SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
         WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
         STEP_NAME: process_data
-        NEXT_STEP_NAME: feature_engineering
+        NEXT_STEP_NAME: train
         INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/process_data/process_data.py
@@ -148,3 +145,16 @@ jobs:
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/package/package.py
 
+    - name: MLSpec Action - Serve
+      id: Serve
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: serve
+        PREVIOUS_STEP_NAME: package
+        INPUT_PARAMETERS_BASE64: ${{ steps.package.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/serve/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/serve/serve.py
