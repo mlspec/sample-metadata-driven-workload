@@ -48,7 +48,7 @@ jobs:
     - name: Output all pip packages
       id: output_all_pip_packages
       run: |
-        python3 -m pip install pipenv
+        python3 -m pip install setuptools wheel pip pipenv
         pipenv shell
         pipenv lock -r > ~/prev_installed_requirements.txt
 
