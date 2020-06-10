@@ -40,25 +40,51 @@ from unittest.mock import MagicMock
 # You can read more about these here - https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables
 
 # The code below is for mocking to make the rest of the code look legit
+subprocess = MagicMock()
+input_object = MagicMock()
+execution_object = MagicMock()
+popen_return = MagicMock()
+popen_return.stdout.read.return_value = "Popen job result would go here."
+subprocess.Popen.return_value = popen_return
+timer = MagicMock()
 
+# Below is for testing - comment out when live
+# results_ml_object = MagicMock()
+# result_ml_object_schema_type = 'feature_engineering_result'
+# result_ml_object_schema_version = '2.1.0'
 
 results_ml_object.set_type(
     schema_type=result_ml_object_schema_type,  # noqa
     schema_version=result_ml_object_schema_version,  # noqa
 )
 
-# Mocked up results
-pipeline_name = INPUT_PARAMETERS.get("PIPELINE_NAME", "")
+# Mocked up execution
+pipeline_name = input_object.pachyderm_pipeline_name
 repo_hash = "b52063c"
+
+# Below is how you would execute a Pachyderm data processing job on a Pachyderm deployment
 external_command = f"pachctl run pipeline {pipeline_name} repo@{repo_hash}"
-result_of_command = subprocess.Popen(
+results_ml_object.extended_properties['result_of_start_pipeline_command'] = subprocess.Popen(
     external_command, shell=True, stdout=subprocess.PIPE
 ).stdout.read()
 
 return_dict = {}
-while return_dict == {}:
-    input_object,
-    execution_object,
+finished_time = None
+while finished_time is None:
+    external_command = f"pachctl query job id={results_ml_object.extended_properties['result_of_command']}"
+    results_ml_object.extended_properties['job_finished'] = subprocess.Popen(
+        external_command, shell=True, stdout=subprocess.PIPE
+    ).stdout.read()
+    if results_ml_object.extended_properties['job_finished'] is not None:
+        finished_time = datetime.datetime.now()
+
+# We're mocking up the idea that the data is all being written to a common share.
+# This could come from Pachyderm directly (we'd do something like the following)
+#
+#     external_command = f"pachctl get job-information id={job-info}"
+#     return_dict = subprocess.Popen(
+#         external_command, shell=True, stdout=subprocess.PIPE
+#     ).stdout.read()
 
 return_dict = {
     "data_output_path": str(Path("/data/contoso/bork_model/raw_data/").absolute()),
@@ -85,7 +111,7 @@ results_ml_object.feature_file_path = return_dict["feature_file_path"]
 # NEW FIELDS
 results_ml_object.engineered_data_path = return_dict["engineered_data_path"]
 results_ml_object.feature_engineering_steps = return_dict["feature_engineering_steps"]
-results_ml_object.extended_properties = {}
+results_ml_object.extended_properties = {'finished_time': finished_time}
 
 # Execution metrics
 results_ml_object.execution_profile.system_memory_utilization = random()
