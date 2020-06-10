@@ -55,7 +55,7 @@ jobs:
       env:
         cache-name: cache-python36-pip
       with:
-        path: /usr/local/lib/python3.6
+        path: ~/.local
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/prev_installed_requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
