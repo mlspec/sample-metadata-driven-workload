@@ -6,9 +6,9 @@ name: ML Workflow
 # events but only for the master branch
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 # Base workflow:
 # workflow_2_0_0_node: workflow|workflow|2.0.0|5594a17a-d1df-4aff-adeb-d5e38eab7e65
@@ -22,9 +22,8 @@ on:
 # Workflow w/ feature engineering & responsible AI & kf_serving:
 # workflow_2_3_0_node: workflow|workflow|2.0.0|e9e3b723-a337-4de9-a221-03dfd178a6ad
 
-
 env:
-  WORKFLOW_NODE_ID: "workflow|workflow|2.0.0|5594a17a-d1df-4aff-adeb-d5e38eab7e65"
+  WORKFLOW_NODE_ID: 'workflow|workflow|2.0.0|22414c60-a10d-474b-9bf2-824c821ea2d8'
   SCHEMAS_GIT_URL: https://github.com/mlspec/mlspeclib-action-samples-schemas.git
   SCHEMAS_DIRECTORY: .parameters/schemas
 
@@ -37,99 +36,115 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
 
-      # - name: Debugging with tmate
-      #   uses: mxschmitt/action-tmate@v2
+    # - name: Debugging with tmate
+    #   uses: mxschmitt/action-tmate@v2
 
-      - name: Output all pip packages
-        id: output_all_pip_packages
-        run: |
-          python3 -m pip freeze > ~/prev_installed_requirements.txt
+    - name: Output all pip packages
+      id: output_all_pip_packages
+      run: |
+        python3 -m pip freeze > ~/prev_installed_requirements.txt
 
-      - name: Cache Pip Installation
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-python36-pip
-        with:
-          path: ~/.local
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/prev_installed_requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+    - name: Cache Pip Installation
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-python36-pip
+      with:
+        path: ~/.local
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/prev_installed_requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
 
-      - name: Setup Environment
-        id: setup_environment
-        run: |
-          python3 -m pip install -U setuptools wheel pip
-          python3 -m pip install -r requirements.txt
-          python3 -m pip install -U flake8
-          python3 -m pip install -U ipython
-          python3 -m pip install -U jupyter 
-          python3 -m pip install -U nbconvert
+    - name: Setup Environment
+      id: setup_environment
+      run: |
+        python3 -m pip install -U setuptools wheel pip
+        python3 -m pip install -r requirements.txt
+        python3 -m pip install -U flake8
+        python3 -m pip install -U ipython
+        python3 -m pip install -U jupyter 
+        python3 -m pip install -U nbconvert
 
-      # - name: Debugging with tmate
-      #   uses: mxschmitt/action-tmate@v2
+    # - name: Debugging with tmate
+    #   uses: mxschmitt/action-tmate@v2
 
-      - name: Lint checked in code files
-        id: python_linting
-        run: |
-          python3 -m flake8 src --count --config=.flake8 --show-source --statistics
+    - name: Lint checked in code files
+      id: python_linting
+      run: |
+        python3 -m flake8 src --count --config=.flake8 --show-source --statistics
 
-      - name: Convert Notebook to Script
-        id: convert_notebook_production_folder_to_script
-        run: |
-          python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
-          cp notebooks/production/*.py src/train
-          cp notebooks/production/*.json data/raw
-          cp notebooks/production/*.hdf5 data/raw
+    - name: Convert Notebook to Script
+      id: convert_notebook_production_folder_to_script
+      run: |
+        python3 -m nbconvert notebooks/production/*.ipynb --config notebooks/nbconvert_config.py
+        cp notebooks/production/*.py src/train
+        cp notebooks/production/*.json data/raw
+        cp notebooks/production/*.hdf5 data/raw
 
-      - name: Run Unit Tests
-        id: python_unit_tests
-        run: |
-          python3 -m unittest discover -s src -p 'test_*.py'
+    - name: Run Unit Tests
+      id: python_unit_tests
+      run: |
+        python3 -m unittest discover -s src -p 'test_*.py'
 
-      - name: MLSpec Action - Process Data
-        id: process_data
-        uses: mlspec/mlspeclib-action-docker@0.1.0
-        with:
-          METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-          SCHEMAS_DIRECTORY: "${{ env.SCHEMAS_DIRECTORY }}"
-          SCHEMAS_GIT_URL: "${{ env.SCHEMAS_GIT_URL }}"
-          WORKFLOW_NODE_ID: "${{ env.WORKFLOW_NODE_ID }}"
-          STEP_NAME: process_data
-          NEXT_STEP_NAME: train
-          INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
-          EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
-          EXECUTION_FILE: ${{ github.workspace }}/src/process_data/process_data.py
+    - name: MLSpec Action - Process Data
+      id: process_data
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: process_data
+        NEXT_STEP_NAME: feature_engineering
+        INPUT_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/input.yaml
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/process_data/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/process_data/process_data.py
 
-      - name: MLSpec Action - Train
-        id: train
-        uses: mlspec/mlspeclib-action-docker@0.1.0
-        with:
-          METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-          SCHEMAS_DIRECTORY: "${{ env.SCHEMAS_DIRECTORY }}"
-          SCHEMAS_GIT_URL: "${{ env.SCHEMAS_GIT_URL }}"
-          WORKFLOW_NODE_ID: "${{ env.WORKFLOW_NODE_ID }}"
-          STEP_NAME: train
-          PREVIOUS_STEP_NAME: process_data
-          NEXT_STEP_NAME: package
-          INPUT_PARAMETERS_BASE64: ${{ steps.process_data.outputs.output_base64_encoded }}
-          EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
-          EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
+    - name: MLSpec Action - Feature Engineering
+      id: feature_engineering
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: feature_engineering
+        PREVIOUS_STEP_NAME: process_data
+        NEXT_STEP_NAME: train
+        INPUT_PARAMETERS_FILE_PATH: ${{ steps.process_data.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/feature_engineering/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/feature_engineering/feature_engineering.py
 
-      - name: MLSpec Action - Package
-        id: package
-        uses: mlspec/mlspeclib-action-docker@0.1.0
-        with:
-          METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
-          SCHEMAS_DIRECTORY: "${{ env.SCHEMAS_DIRECTORY }}"
-          SCHEMAS_GIT_URL: "${{ env.SCHEMAS_GIT_URL }}"
-          WORKFLOW_NODE_ID: "${{ env.WORKFLOW_NODE_ID }}"
-          STEP_NAME: package
-          PREVIOUS_STEP_NAME: train
-          INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
-          EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
-          EXECUTION_FILE: ${{ github.workspace }}/src/package/package.py
+    - name: MLSpec Action - Train
+      id: train
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: train
+        PREVIOUS_STEP_NAME: feature_engineering
+        NEXT_STEP_NAME: package
+        INPUT_PARAMETERS_BASE64: ${{ steps.feature_engineering.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/train/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/train/train.py
+
+    - name: MLSpec Action - Package
+      id: package
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: package
+        PREVIOUS_STEP_NAME: train
+        INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/package/package.py
+
