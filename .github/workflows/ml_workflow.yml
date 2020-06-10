@@ -69,8 +69,8 @@ jobs:
         python3 -m pip install -U jupyter 
         python3 -m pip install -U nbconvert
 
-    - name: Debugging with tmate
-      uses: mxschmitt/action-tmate@v2
+    # - name: Debugging with tmate
+    #   uses: mxschmitt/action-tmate@v2
 
     - name: Lint checked in code files
       id: python_linting
