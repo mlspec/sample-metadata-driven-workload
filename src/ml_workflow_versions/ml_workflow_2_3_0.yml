@@ -145,6 +145,21 @@ jobs:
         EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/package/execution.yaml
         EXECUTION_FILE: ${{ github.workspace }}/src/package/package.py
 
+    - name: MLSpec Action - Responsible AI
+      id: responsible_ai
+      uses: mlspec/mlspeclib-action-docker@0.1.0
+      with:
+        METASTORE_CREDENTIALS: ${{ secrets.METASTORE_CREDENTIALS_PROD }}
+        SCHEMAS_DIRECTORY: '${{ env.SCHEMAS_DIRECTORY }}' 
+        SCHEMAS_GIT_URL: '${{ env.SCHEMAS_GIT_URL }}'
+        WORKFLOW_NODE_ID: '${{ env.WORKFLOW_NODE_ID }}'
+        STEP_NAME: train
+        PREVIOUS_STEP_NAME: train
+        NEXT_STEP_NAME: package
+        INPUT_PARAMETERS_BASE64: ${{ steps.train.outputs.output_base64_encoded }}
+        EXECUTION_PARAMETERS_FILE_PATH: ${{ github.workspace }}/.parameters/responsible_ai/execution.yaml
+        EXECUTION_FILE: ${{ github.workspace }}/src/responsible_ai/responsible_ai.py
+
     - name: MLSpec Action - Serve
       id: Serve
       uses: mlspec/mlspeclib-action-docker@0.1.0

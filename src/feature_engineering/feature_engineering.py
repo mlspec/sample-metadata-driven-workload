@@ -65,7 +65,7 @@ pipeline_name = "filter_and_tokenize"
 repo_hash = "b52063c"
 
 # Below is how you would execute a Pachyderm data processing job on a Pachyderm deployment
-external_command = f"pachctl run pipeline {pipeline_name} repo@{repo_hash}"
+external_command = f"pachctl run pipeline {pipeline_name} repo@{repo_hash} inputs={input_object.to_json()}"
 result_of_start_pipeline_command = subprocess.Popen(
     external_command, shell=True, stdout=subprocess.PIPE
 ).stdout.read()
